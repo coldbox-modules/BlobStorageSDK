@@ -1,0 +1,17 @@
+{
+    "name":"Tester",
+    "version":"0.0.0",
+    "slug":"tester",
+    "private":true,
+    "description":"",
+    "dependencies":{
+        "coldbox":"^7"
+    },
+    "devDependencies":{
+        "testbox":"^6"
+    },
+    "installPaths":{
+        "testbox":"testbox/",
+        "coldbox":"coldbox/"
+    }
+}

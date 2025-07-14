@@ -1,0 +1,9 @@
+{
+    "app":{
+        "cfengine":"boxlang@be"
+    },
+    "JVM":{
+        "javaVersion":"openjdk21"
+    },
+    "name":"BlobStorageSDK_boxlang"
+}
