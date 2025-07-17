@@ -174,7 +174,10 @@ component accessors=true singleton ThreadSafe {
 	 * @overwrite Whether to overwrite the blob if it already exists
 	 * @timeoutSeconds The timeout for the upload operation
 	 */
-	function uploadBlobFromFile( required string containerName=settings.containerName, required string blobName, required string filePath, boolean overwrite=settings.overwrite, numeric timeoutSeconds=60 ) {
+	function uploadBlobFromFile( required string containerName=settings.containerName, required string blobName, required string filePath, boolean overwrite=settings.overwrite, numeric timeoutSeconds=60, boolean expandPaths=settings.expandPaths ) {
+		if( expandPaths ) {
+			filePath = expandPath( filePath );
+		}
 		if( !overwrite && blobExists( containerName, blobName, timeoutSeconds ) ) {
 			throw(
 				type = "BlobStorage.BlobAlreadyExists",
@@ -184,7 +187,7 @@ component accessors=true singleton ThreadSafe {
 
 		var timeoutDuration = getDuration( timeoutSeconds );
 		var blobClient = getContainerClient( containerName ).getBlobClient( blobName );
-		var uploadOptions = createObject( 'java', 'com.azure.storage.blob.options.BlobUploadFromFileOptions' ).init( expandPath( filePath ) );
+		var uploadOptions = createObject( 'java', 'com.azure.storage.blob.options.BlobUploadFromFileOptions' ).init( filePath );
 		blobClient.uploadFromFileWithResponse( uploadOptions, timeoutDuration, noneContext );
 		return this;
 	}
@@ -222,8 +225,11 @@ component accessors=true singleton ThreadSafe {
 	 * 
 	 * @return The response object containing metadata about the download operation.
 	 */
-	function downloadBlobToFile( required string containerName=settings.containerName, required string blobName, required string filePath, numeric timeoutSeconds=60, numeric maxDownloadRetries=settings.maxDownloadRetries, boolean overwrite=settings.overwrite ) {
-		if( !overwrite && fileExists( expandPath( filePath ) ) ) {
+	function downloadBlobToFile( required string containerName=settings.containerName, required string blobName, required string filePath, numeric timeoutSeconds=60, numeric maxDownloadRetries=settings.maxDownloadRetries, boolean overwrite=settings.overwrite, boolean expandPaths=settings.expandPaths ) {
+		if( expandPaths ) {
+			filePath = expandPath( filePath );
+		}
+		if( !overwrite && fileExists( filePath ) ) {
 			throw(
 				type = "BlobStorage.FileAlreadyExists",
 				message = "File '#filePath#' already exists. Use overwrite=true to replace it."
@@ -234,7 +240,7 @@ component accessors=true singleton ThreadSafe {
 
 		var downloadOptions = // TODO: 	setOpenOptions(Set<OpenOption> openOptions), setParallelTransferOptions(ParallelTransferOptions parallelTransferOptions), setRange(BlobRange range), setRequestConditions(BlobRequestConditions requestConditions), setRetrieveContentRangeMd5(boolean retrieveContentRangeMd5) 
 			createObject( 'java', 'com.azure.storage.blob.options.BlobDownloadToFileOptions' )
-				.init( expandPath( filePath ) )
+				.init( filePath )
 				.setDownloadRetryOptions( getDownloadRetryOptions( maxDownloadRetries ) );
 
 		if( arguments.overwrite ) {

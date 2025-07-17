@@ -76,6 +76,7 @@ moduleSettings = {
     containerName : '',
     overwrite : false,
     maxDownloadRetries : 0,
+	expandPaths : true,
     credentials : {
         type : 'connectionString', // connectionString, default, ClientSecret, ClientCertificate
         connectionString : '',
