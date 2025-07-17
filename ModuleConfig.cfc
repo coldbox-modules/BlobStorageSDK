@@ -19,6 +19,7 @@ component {
 			containerName : '',
 			overwrite : false,
 			maxDownloadRetries : 0,
+			expandPaths : true,
 			/*
 				Credential Types and value option used for each:
 
